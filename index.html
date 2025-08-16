@@ -1,213 +1,241 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Status — Live Checker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root{
-            --bg: #0a0f1a;
-            --text:#e7fbff;
-            --muted:#9ac6cf;
-            --accent:#00f0ff;
-        }
-        *{
-            box-sizing:border-box
-        }
-        html,body{
-            margin:0;
-            height:100%;
-            background:radial-gradient(1200px 600px at 50% -200px, rgba(0,240,255,0.08), transparent 50%), #0a0f1a;
-            color:var(--text);
-            font-family:'Rajdhani', system-ui, -apple-system, Segoe UI, Roboto, Arial;
-        }
-        .wrap{
-            max-width:960px;
-            margin:40px auto;
-            padding:20px;
-        }
-        h1{
-            font-family:'Orbitron';
-            font-size:24px;
-            letter-spacing:1px;
-            margin:0 0 18px
-        }
-        .bar{
-            display:flex;
-            gap:10px;
-            align-items:center;
-            margin-bottom:18px
-        }
-        .bar input{
-            flex:1;
-            padding:10px 12px;
-            font-size:16px;
-            border-radius:10px;
-            border:1px solid rgba(255,255,255,0.12);
-            background:rgba(255,255,255,0.04);
-            color:var(--text);
-            outline:none;
-        }
-        .bar button{
-            padding:10px 14px;
-            border-radius:10px;
-            border:none;
-            font-weight:700;
-            cursor:pointer;
-            background:linear-gradient(90deg,#00f0ff,#8b5cf6);
-            color:#041018;
-        }
-        .hint{
-            color:var(--muted);
-            font-size:13px;
-            margin-bottom:14px
-        }
-        .results{
-            display:grid;
-            gap:10px
-        }
-        .card{
-            padding:12px;
-            border-radius:10px;
-            background:rgba(255,255,255,0.04);
-            border:1px solid rgba(255,255,255,0.08);
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cheat Status Dashboard — Neon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
+    :root{
+      --bg: #05010a;
+      --card: #0a0a1a;
+      --muted: #7f8c99;
+      --accent: #ff00ff;
+      --ok: #00ffcc;
+      --bad: #ff0066;
+      --glass: rgba(255,255,255,0.05);
+      --radius: 14px;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      background: radial-gradient(circle at top, #0a0020, #05010a 70%);
+      font-family: 'Orbitron', sans-serif;
+      color: #eaf6ff;
+    }
+    .wrap{max-width: 980px;margin: 40px auto;padding: 20px;}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .brand{display:flex;gap:14px;align-items:center;}
+    .logo{
+      width:60px;height:60px;
+      border-radius:12px;
+      background: linear-gradient(135deg,#ff00ff,#00ffff);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;color:white;font-size:20px;letter-spacing:1px;
+      text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff;
+      box-shadow: 0 0 25px #ff00ff, inset 0 0 20px #00ffff;
+    }
+    h1{margin:0;font-size:22px;font-weight:700;line-height:1;text-shadow: 0 0 10px var(--accent);}
+    p.lead{margin:0;color:var(--muted);font-size:14px;}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+      border-radius: var(--radius);
+      padding:20px;
+      box-shadow: 0 0 20px rgba(255,0,255,0.3), 0 0 40px rgba(0,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .controls{display:flex;gap:10px;margin: 16px 0 20px 0;flex-wrap:wrap;}
+    .search{
+      flex:1 1 320px;
+      display:flex;align-items:center;gap:8px;
+      background:var(--glass);
+      padding:8px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 0 8px rgba(0,255,255,0.2);
+    }
+    .search input{
+      background:transparent;
+      border:0;
+      outline:0;
+      color:#fff;
+      font-size:14px;
+      width:100%;
+    }
+    select, button{
+      padding:8px 12px;
+      border-radius:10px;
+      border:0;
+      background:linear-gradient(90deg,#ff00ff33,#00ffff33);
+      color:#fff;
+      cursor:pointer;
+      font-size:13px;
+      min-height:40px;
+      box-shadow: 0 0 10px rgba(255,0,255,0.4), inset 0 0 8px rgba(0,255,255,0.3);
+      transition: 0.2s ease;
+    }
+    select:hover, button:hover{ transform: scale(1.05); }
+    table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px; display:none;}
+    thead th{
+      text-align:left;font-size:12px;color:var(--muted);
+      padding:12px 10px;text-transform:uppercase;letter-spacing:1px;
+    }
+    tbody tr{
+      background: linear-gradient(90deg, rgba(255,0,255,0.04), rgba(0,255,255,0.04));
+      border-radius:8px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    tbody tr:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(255,0,255,0.3), 0 0 20px rgba(0,255,255,0.2);
+    }
+    td{padding:12px 10px;vertical-align:middle;border-top:1px solid rgba(255,255,255,0.08);}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 12px;border-radius:999px;font-weight:700;
+      font-size:13px;color:white;text-transform:uppercase;
+      text-shadow: 0 0 5px currentColor;
+    }
+    .ok{ background: rgba(0,255,204,0.1); color:var(--ok); border:1px solid var(--ok); box-shadow: 0 0 10px var(--ok); }
+    .bad{ background: rgba(255,0,102,0.1); color:var(--bad); border:1px solid var(--bad); box-shadow: 0 0 10px var(--bad); }
+    .name{font-weight:700;font-size:15px;}
+    .meta{font-size:12px;color:var(--muted);margin-top:6px;}
+    .legend{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+    .legend span{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+    .footer{margin-top:20px;font-size:12px;color:var(--muted);}
+    @media (max-width:720px){
+      thead{display:none}
+      tbody td{ display:block; width:100% ; padding:10px 8px;}
+      tbody tr{ margin-bottom:14px; display:block; border-radius:12px; overflow:hidden; }
+      .controls{ gap:8px }
+    }
+  </style>
 </head>
 <body>
-    <div class="wrap">
-        <h1>Live Status</h1>
-        <div class="bar">
-            <input id="search" type="search" placeholder="Search product..." aria-label="Search for product status">
-            <button id="searchBtn" aria-label="Perform search">Search</button>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">ST</div>
+        <div>
+          <h1>Status Tracker</h1>
+          <p class="lead">Neon cyberpunk status board</p>
         </div>
-        <div class="hint">Tip: Arriving from Devil Store with a product pre-filled uses the q parameter.</div>
-        <div id="results" class="results"></div>
+      </div>
+      <div style="text-align:right">
+        <small style="color:var(--muted)">Last updated: <span id="lastUpdated">—</span></small>
+      </div>
+    </header>
+    <div class="card">
+      <div class="controls">
+        <div class="search">
+          <input id="q" type="search" placeholder="Search by name (e.g. PUBG, ARCAN)..." aria-label="Search items">
+        </div>
+        <select id="filter">
+          <option value="all">All statuses</option>
+          <option value="undetected">Undetected only</option>
+          <option value="detected">Detected only</option>
+        </select>
+        <button id="reset">Reset</button>
+      </div>
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>Software / Item</th>
+            <th>Game</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="list"></tbody>
+      </table>
+      <div class="legend">
+        <span><span class="badge ok">✔ Undetected</span> Safe</span>
+        <span><span class="badge bad">✖ Detected</span> Risky</span>
+        <!-- Button added here -->
+        <button id="showBtn">Show All Products</button>
+      </div>
+      <p class="footer">
+        ⚠ <strong>Disclaimer:</strong> This page only shows statuses. For tracking info only.
+      </p>
     </div>
-    <script>
-        /*
-        * A simple live status checker page that works with the Devil Store webpage.
-        * It can be populated with data from the URL (?q=product-name) and provides
-        * real-time search results based on a predefined dataset.
-        */
+  </div>
+  <script>
+    const DATA = [
+      { name: 'FECURITY', game: 'Call of Duty', status: 'undetected', note: '' },
+      { name: 'DULLWAVE', game: 'Call of Duty', status: 'undetected', note: '' },
+      { name: 'ARCAN', game: 'Apex Legend', status: 'undetected', note: '' },
+      { name: 'BSS', game: 'PUBG', status: 'detected', note: '' },
+      { name: 'ARCAN', game: 'PUBG', status: 'detected', note: '' },
+      { name: 'DODO', game: 'PUBG', status: 'undetected', note: '' },
+      { name: 'IO', game: 'PUBG', status: 'undetected', note: '' }
+    ];
+    const tbody = document.getElementById('list');
+    const q = document.getElementById('q');
+    const filter = document.getElementById('filter');
+    const reset = document.getElementById('reset');
+    const showBtn = document.getElementById('showBtn');
+    const table = document.getElementById('productTable');
+    const lastUpdated = document.getElementById('lastUpdated');
 
-        /*
-        * Demo dataset with product names and their statuses.
-        * In a real application, this data would be fetched from a live API.
-        */
-        const ITEMS = [
-            { name: "CALL OF DUTY — FECURITY", status: "UNDETECTED" },
-            { name: "CALL OF DUTY — DULLWAVE", status: "UNDETECTED" },
-            { name: "APEX LEGENDS — ARCAN", status: "UNDETECTED" },
-            { name: "BSS — PUBG", status: "DETECTED" },
-            { name: "ARCAN — PUBG", status: "DETECTED" },
-            { name: "DODO — PUBG", status: "UNDETECTED" },
-            { name: "IO — PUBG", status: "UNDETECTED" }
-        ];
+    function makeRow(item){
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      tdName.innerHTML = '<div class="name">' + item.name + '</div><div class="meta">' + item.game + '</div>';
+      tr.appendChild(tdName);
+      const tdGame = document.createElement('td');
+      tdGame.textContent = item.game;
+      tr.appendChild(tdGame);
+      const tdStatus = document.createElement('td');
+      const span = document.createElement('span');
+      span.className = 'badge ' + (item.status === 'undetected' ? 'ok' : 'bad');
+      span.textContent = (item.status === 'undetected' ? 'Undetected' : 'Detected');
+      tdStatus.appendChild(span);
+      tr.appendChild(tdStatus);
+      const tdNote = document.createElement('td');
+      tdNote.textContent = item.note || '—';
+      tr.appendChild(tdNote);
+      return tr;
+    }
 
-        // Get DOM elements
-        const input = document.getElementById('search');
-        const btn = document.getElementById('searchBtn');
-        const root = document.getElementById('results');
+    function render(list){
+      tbody.innerHTML = '';
+      if(list.length === 0){
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="4" style="padding:18px;color:var(--muted)">No results found.</td>';
+        tbody.appendChild(tr);
+        return;
+      }
+      for(const it of list){
+        tbody.appendChild(makeRow(it));
+      }
+    }
 
-        /**
-         * Renders the search results based on the query.
-         * @param {string} q - The search query string.
-         */
-        function renderResults(q) {
-            root.innerHTML = '';
-            const needle = (q || '').toLowerCase().trim();
+    function applyFilters(){
+      const qv = q.value.trim().toLowerCase();
+      const fv = filter.value;
+      const filtered = DATA.filter(item=>{
+        if(fv === 'undetected' && item.status !== 'undetected') return false;
+        if(fv === 'detected' && item.status !== 'detected') return false;
+        if(qv === '') return true;
+        return (item.name + ' ' + item.game).toLowerCase().includes(qv);
+      });
+      render(filtered);
+      table.style.display = 'table'; // show table when filtering
+    }
 
-            if (!needle) {
-                root.innerHTML = '<div class="card">Type to search for product status…</div>';
-                return;
-            }
+    q.addEventListener('input', applyFilters);
+    filter.addEventListener('change', applyFilters);
+    reset.addEventListener('click', ()=>{
+      q.value='';filter.value='all';applyFilters();
+    });
+    showBtn.addEventListener('click', ()=>{
+      table.style.display = 'table';
+      render(DATA);
+      lastUpdated.textContent = new Date().toLocaleString();
+      showBtn.style.display = 'none';
+    });
 
-            const matched = ITEMS.filter(x => x.name.toLowerCase().includes(needle));
-
-            if (matched.length === 0) {
-                root.innerHTML = `<div class="card">No results found for: <strong>${escapeHtml(q)}</strong></div>`;
-                return;
-            }
-
-            matched.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.textContent = `${item.name} — `;
-                const statusSpan = document.createElement('span');
-
-                // Apply styles based on status
-                if (item.status === "OK") {
-                    statusSpan.style.color = '#00ff9a';
-                    statusSpan.textContent = 'OK';
-                } else if (item.status === "MAINTENANCE") {
-                    statusSpan.style.color = '#ffc107';
-                    statusSpan.textContent = 'MAINTENANCE';
-                } else if (item.status === "DOWN") {
-                    statusSpan.style.color = '#ff4c6b';
-                    statusSpan.textContent = 'DOWN';
-                } else {
-                    statusSpan.style.color = 'var(--muted)';
-                    statusSpan.textContent = 'UNKNOWN';
-                }
-
-                div.appendChild(statusSpan);
-                root.appendChild(div);
-            });
-        }
-
-        /**
-         * Escapes HTML characters in a string to prevent XSS.
-         * @param {string} s - The string to escape.
-         * @returns {string} The escaped string.
-         */
-        function escapeHtml(s) {
-            return String(s).replace(/[&<>"']/g, m => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            }[m]));
-        }
-
-        // Wire search input events
-        input.addEventListener('input', () => renderResults(input.value));
-        input.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                renderResults(input.value);
-            }
-        });
-
-        // Wire search button event
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            renderResults(input.value);
-        });
-
-        /*
-        * Auto-fill search input from URL parameter (?q=) on page load.
-        */
-        (function() {
-            function onReady(fn) {
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', fn);
-                } else {
-                    fn();
-                }
-            }
-
-            onReady(() => {
-                const params = new URLSearchParams(location.search);
-                const q = params.get('q');
-                if (q) {
-                    input.value = decodeURIComponent(q);
-                }
-                renderResults(input.value);
-                input.focus();
-            });
-        })();
-    </script>
+    lastUpdated.textContent = new Date().toLocaleString();
+  </script>
 </body>
 </html>
