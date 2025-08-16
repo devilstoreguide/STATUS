@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cheat Status Dashboard</title>
+  <style>
+    :root{
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #7c3aed;
+      --ok: #10b981;   /* green */
+      --bad: #ef4444;  /* red */
+      --glass: rgba(255,255,255,0.03);
+      --radius: 12px;
+      --fw-normal: 500;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f3f4f6;
+        --card: #ffffff;
+        --muted: #475569;
+        --accent: #6d28d9;
+        --glass: rgba(0,0,0,0.04);
+      }
+    }
+
+    html,body{height:100%; margin:0; background: linear-gradient(180deg,var(--bg), #071023); color: #e6eef8}
+    .wrap{max-width: 980px;margin: 36px auto;padding: 20px;}
+
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px;}
+    .brand{display:flex;gap:14px;align-items:center;}
+    .logo{width:56px;height:56px;border-radius:12px;background: linear-gradient(135deg,var(--accent), #2563eb);box-shadow: 0 6px 18px rgba(2,6,23,0.6);display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:18px;letter-spacing:0.6px;}
+    h1{margin:0;font-size:20px;font-weight:700;line-height:1;}
+    p.lead{margin:0;color:var(--muted);font-size:13px;}
+
+    .card{background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius: var(--radius);padding:16px;box-shadow: 0 6px 22px rgba(2,6,23,0.6);border: 1px solid rgba(255,255,255,0.03);}
+
+    .controls{display:flex;gap:10px;margin: 16px 0 20px 0;flex-wrap:wrap;}
+    .search{flex:1 1 320px;display:flex;align-items:center;gap:8px;background:var(--glass);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);}
+    .search input{background:transparent;border:0;outline:0;color:inherit;font-size:14px;width:100%;}
+    select, button{padding:8px 12px;border-radius:10px;border:0;background:linear-gradient(180deg, rgba(255,255,255,0.03), transparent);color:inherit;font-weight:var(--fw-normal);cursor:pointer;font-size:13px;min-height:40px;}
+
+    table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px;}
+    thead th{text-align:left;font-size:12px;color:var(--muted);padding:12px 10px;text-transform:uppercase;letter-spacing:0.8px;}
+    tbody tr{background: linear-gradient(180deg, transparent, rgba(255,255,255,0.01));border-radius:8px;transition:transform .12s ease, box-shadow .12s ease;}
+    tbody tr:hover{ transform: translateY(-4px); box-shadow: 0 8px 30px rgba(2,6,23,0.6); }
+    td{padding:12px 10px;vertical-align:middle;border-top:1px solid rgba(255,255,255,0.02);}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:600;font-size:13px;color:white;}
+    .ok{ background: linear-gradient(90deg, rgba(16,185,129,0.15), rgba(16,185,129,0.08)); color:var(--ok); box-shadow: inset 0 -2px 0 rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.12) }
+    .bad{ background: linear-gradient(90deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03)); color:var(--bad); box-shadow: inset 0 -2px 0 rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.08) }
+    .name{font-weight:700;font-size:15px;}
+    .meta{font-size:12px;color:var(--muted);margin-top:6px;}
+
+    .legend{display:flex;gap:12px;align-items:center;margin-top:12px;}
+    .legend span{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+
+    .footer{margin-top:16px;font-size:13px;color:var(--muted);}
+
+    @media (max-width:720px){
+      thead{display:none}
+      tbody td{ display:block; width:100% ; padding:10px 8px;}
+      tbody tr{ margin-bottom:12px; display:block; border-radius:12px; overflow:hidden; }
+      .controls{ gap:8px }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">ST</div>
+        <div>
+          <h1>Status Tracker</h1>
+          <p class="lead">Simple status board for the items you provided</p>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <small style="color:var(--muted)">Last updated: <span id="lastUpdated">—</span></small>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="controls">
+        <div class="search">
+          <input id="q" type="search" placeholder="Search by name (e.g. PUBG, ARCAN)..." aria-label="Search items">
+        </div>
+        <select id="filter">
+          <option value="all">All statuses</option>
+          <option value="undetected">Undetected only</option>
+          <option value="detected">Detected only</option>
+        </select>
+        <button id="reset">Reset</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Software / Item</th>
+            <th>Game</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="list"></tbody>
+      </table>
+
+      <div class="legend">
+        <span><span class="badge ok" style="padding:6px 8px">✔ Undetected</span> likely not flagged</span>
+        <span><span class="badge bad" style="padding:6px 8px">✖ Detected</span> reported as detected</span>
+      </div>
+
+      <p class="footer">
+        <strong>Disclaimer:</strong> This page only shows statuses; it does not provide cheats or instructions. Use this for informational/tracking purposes only.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const DATA = [
+      { name: 'FECURITY', game: 'Call of Duty', status: 'undetected', note: '' },
+      { name: 'DULLWAVE', game: 'Call of Duty', status: 'undetected', note: '' },
+      { name: 'ARCAN', game: 'Apex Legend', status: 'undetected', note: '' },
+      { name: 'BSS', game: 'PUBG', status: 'detected', note: '' },
+      { name: 'ARCAN', game: 'PUBG', status: 'detected', note: '' },
+      { name: 'DODO', game: 'PUBG', status: 'undetected', note: '' },
+      { name: 'IO', game: 'PUBG', status: 'undetected', note: '' }
+    ];
+
+    const tbody = document.getElementById('list');
+    const q = document.getElementById('q');
+    const filter = document.getElementById('filter');
+    const reset = document.getElementById('reset');
+    const lastUpdated = document.getElementById('lastUpdated');
+
+    function makeRow(item){
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      tdName.innerHTML = '<div class="name">' + item.name + '</div><div class="meta">' + item.game + '</div>';
+      tr.appendChild(tdName);
+
+      const tdGame = document.createElement('td');
+      tdGame.textContent = item.game;
+      tr.appendChild(tdGame);
+
+      const tdStatus = document.createElement('td');
+      const span = document.createElement('span');
+      span.className = 'badge ' + (item.status === 'undetected' ? 'ok' : 'bad');
+      span.textContent = (item.status === 'undetected' ? 'Undetected' : 'Detected');
+      tdStatus.appendChild(span);
+      tr.appendChild(tdStatus);
+
+      const tdNote = document.createElement('td');
+      tdNote.textContent = item.note || '—';
+      tr.appendChild(tdNote);
+
+      return tr;
+    }
+
+    function render(list){
+      tbody.innerHTML = '';
+      if(list.length === 0){
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="4" style="padding:18px;color:var(--muted)">No results found.</td>';
+        tbody.appendChild(tr);
+        return;
+      }
+      for(const it of list){
+        tbody.appendChild(makeRow(it));
+      }
+    }
+
+    function applyFilters(){
+      const qv = q.value.trim().toLowerCase();
+      const fv = filter.value;
+      const filtered = DATA.filter(item=>{
+        if(fv === 'undetected' && item.status !== 'undetected') return false;
+        if(fv === 'detected' && item.status !== 'detected') return false;
+        if(qv === '') return true;
+        return (item.name + ' ' + item.game).toLowerCase().includes(qv);
+      });
+      render(filtered);
+    }
+
+    q.addEventListener('input', applyFilters);
+    filter.addEventListener('change', applyFilters);
+    reset.addEventListener('click', ()=>{q.value='';filter.value='all';applyFilters();});
+
+    render(DATA);
+    lastUpdated.textContent = new Date().toLocaleString();
+  </script>
+</body>
+</html>
