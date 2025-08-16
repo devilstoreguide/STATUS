@@ -103,6 +103,20 @@
     .legend{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap;}
     .legend span{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
     .footer{margin-top:20px;font-size:12px;color:var(--muted);}
+    
+    /* Single product highlight */
+    .single-product{
+      background: linear-gradient(90deg, rgba(255,0,255,0.15), rgba(0,255,255,0.15));
+      border: 2px solid rgba(255,0,255,0.3);
+    }
+    
+    /* Product focused mode */
+    .product-focused {
+      background: linear-gradient(135deg, rgba(255,0,255,0.1), rgba(0,255,255,0.1));
+      border: 2px solid rgba(0,255,255,0.4);
+      box-shadow: 0 0 30px rgba(0,255,255,0.3), 0 0 60px rgba(255,0,255,0.2);
+    }
+    
     @media (max-width:720px){
       thead{display:none}
       tbody td{ display:block; width:100% ; padding:10px 8px;}
@@ -118,13 +132,14 @@
         <div class="logo">ST</div>
         <div>
           <h1>Status Tracker</h1>
-          <p class="lead">Neon cyberpunk status board</p>
+          <p class="lead" id="pageSubtitle">Neon cyberpunk status board</p>
         </div>
       </div>
       <div style="text-align:right">
         <small style="color:var(--muted)">Last updated: <span id="lastUpdated">—</span></small>
       </div>
     </header>
+    
     <div class="card">
       <div class="controls">
         <div class="search">
@@ -137,6 +152,7 @@
         </select>
         <button id="reset">Reset</button>
       </div>
+      
       <table id="productTable">
         <thead>
           <tr>
@@ -148,18 +164,20 @@
         </thead>
         <tbody id="list"></tbody>
       </table>
+      
       <div class="legend">
         <span><span class="badge ok">✔ Undetected</span> Safe</span>
         <span><span class="badge bad">✖ Detected</span> Risky</span>
-        <!-- Buttons inside legend -->
         <button id="showBtn">Show All Products</button>
         <button id="closeBtn" style="display:none;">Close</button>
       </div>
+      
       <p class="footer">
         ⚠ <strong>Disclaimer:</strong> This page only shows statuses. For tracking info only.
       </p>
     </div>
   </div>
+  
   <script>
     const DATA = [
       { name: 'FECURITY', game: 'Call of Duty', status: 'undetected', note: '' },
@@ -170,7 +188,7 @@
       { name: 'DODO', game: 'PUBG', status: 'undetected', note: '' },
       { name: 'IO', game: 'PUBG', status: 'undetected', note: '' }
     ];
-
+    
     const tbody = document.getElementById('list');
     const q = document.getElementById('q');
     const filter = document.getElementById('filter');
@@ -179,27 +197,39 @@
     const closeBtn = document.getElementById('closeBtn');
     const table = document.getElementById('productTable');
     const lastUpdated = document.getElementById('lastUpdated');
-
-    function makeRow(item){
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetProduct = urlParams.get('product');
+    const targetGame = urlParams.get('game');
+    
+    function makeRow(item, isHighlighted = false){
       const tr = document.createElement('tr');
+      if(isHighlighted) tr.className = 'product-focused';
+      
       const tdName = document.createElement('td');
       tdName.innerHTML = '<div class="name">' + item.name + '</div><div class="meta">' + item.game + '</div>';
       tr.appendChild(tdName);
+      
       const tdGame = document.createElement('td');
       tdGame.textContent = item.game;
       tr.appendChild(tdGame);
+      
       const tdStatus = document.createElement('td');
       const span = document.createElement('span');
       span.className = 'badge ' + (item.status === 'undetected' ? 'ok' : 'bad');
-      span.textContent = (item.status === 'undetected' ? 'Undetected' : 'Detected');
+      span.textContent = (item.status === 'undetected' ? '✔ Undetected' : '✖ Detected');
       tdStatus.appendChild(span);
       tr.appendChild(tdStatus);
+      
       const tdNote = document.createElement('td');
       tdNote.textContent = item.note || '—';
       tr.appendChild(tdNote);
+      
       return tr;
     }
-
+    
     function render(list){
       tbody.innerHTML = '';
       if(list.length === 0){
@@ -208,11 +238,12 @@
         tbody.appendChild(tr);
         return;
       }
-      for(const it of list){
-        tbody.appendChild(makeRow(it));
+      for(const item of list){
+        const isHighlighted = targetProduct && item.name === targetProduct && item.game === targetGame;
+        tbody.appendChild(makeRow(item, isHighlighted));
       }
     }
-
+    
     function applyFilters(){
       const qv = q.value.trim().toLowerCase();
       const fv = filter.value;
@@ -225,13 +256,40 @@
       render(filtered);
       table.style.display = 'table';
     }
-
+    
+    // Initialize page based on URL parameters
+    function initializePage(){
+      if(targetProduct && targetGame){
+        // Show specific product
+        pageSubtitle.textContent = `Status for ${targetProduct} - ${targetGame}`;
+        
+        // Filter to show only the target product
+        const targetItem = DATA.filter(item => item.name === targetProduct && item.game === targetGame);
+        
+        if(targetItem.length > 0){
+          render(targetItem);
+          table.style.display = 'table';
+          showBtn.style.display = 'none';
+          closeBtn.style.display = 'inline-block';
+        } else {
+          // If product not found, show all
+          render(DATA);
+          table.style.display = 'table';
+          pageSubtitle.textContent = `Product "${targetProduct}" not found - Showing all products`;
+        }
+      } else {
+        // Normal behavior - show button to reveal all
+        pageSubtitle.textContent = 'Neon cyberpunk status board';
+      }
+      lastUpdated.textContent = new Date().toLocaleString();
+    }
+    
     q.addEventListener('input', applyFilters);
     filter.addEventListener('change', applyFilters);
     reset.addEventListener('click', ()=>{
       q.value='';filter.value='all';applyFilters();
     });
-
+    
     showBtn.addEventListener('click', ()=>{
       table.style.display = 'table';
       render(DATA);
@@ -239,14 +297,15 @@
       showBtn.style.display = 'none';
       closeBtn.style.display = 'inline-block';
     });
-
+    
     closeBtn.addEventListener('click', ()=>{
       table.style.display = 'none';
       closeBtn.style.display = 'none';
       showBtn.style.display = 'inline-block';
     });
-
-    lastUpdated.textContent = new Date().toLocaleString();
+    
+    // Initialize the page
+    initializePage();
   </script>
 </body>
 </html>
