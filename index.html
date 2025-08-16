@@ -6,18 +6,16 @@
   <title>Cheat Status Dashboard — Neon</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
-
     :root{
       --bg: #05010a;
       --card: #0a0a1a;
       --muted: #7f8c99;
       --accent: #ff00ff;
-      --ok: #00ffcc;   /* neon green */
-      --bad: #ff0066;  /* neon red/pink */
+      --ok: #00ffcc;
+      --bad: #ff0066;
       --glass: rgba(255,255,255,0.05);
       --radius: 14px;
     }
-
     html,body{
       height:100%;
       margin:0;
@@ -25,9 +23,7 @@
       font-family: 'Orbitron', sans-serif;
       color: #eaf6ff;
     }
-
     .wrap{max-width: 980px;margin: 40px auto;padding: 20px;}
-
     header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px;}
     .brand{display:flex;gap:14px;align-items:center;}
     .logo{
@@ -41,7 +37,6 @@
     }
     h1{margin:0;font-size:22px;font-weight:700;line-height:1;text-shadow: 0 0 10px var(--accent);}
     p.lead{margin:0;color:var(--muted);font-size:14px;}
-
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
       border-radius: var(--radius);
@@ -49,7 +44,6 @@
       box-shadow: 0 0 20px rgba(255,0,255,0.3), 0 0 40px rgba(0,255,255,0.2);
       border: 1px solid rgba(255,255,255,0.1);
     }
-
     .controls{display:flex;gap:10px;margin: 16px 0 20px 0;flex-wrap:wrap;}
     .search{
       flex:1 1 320px;
@@ -81,8 +75,7 @@
       transition: 0.2s ease;
     }
     select:hover, button:hover{ transform: scale(1.05); }
-
-    table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px;}
+    table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px; display:none;}
     thead th{
       text-align:left;font-size:12px;color:var(--muted);
       padding:12px 10px;text-transform:uppercase;letter-spacing:1px;
@@ -107,12 +100,9 @@
     .bad{ background: rgba(255,0,102,0.1); color:var(--bad); border:1px solid var(--bad); box-shadow: 0 0 10px var(--bad); }
     .name{font-weight:700;font-size:15px;}
     .meta{font-size:12px;color:var(--muted);margin-top:6px;}
-
-    .legend{display:flex;gap:16px;align-items:center;margin-top:14px;}
+    .legend{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap;}
     .legend span{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
-
     .footer{margin-top:20px;font-size:12px;color:var(--muted);}
-
     @media (max-width:720px){
       thead{display:none}
       tbody td{ display:block; width:100% ; padding:10px 8px;}
@@ -127,7 +117,7 @@
       <div class="brand">
         <div class="logo">ST</div>
         <div>
-          <h1>Status Tracker</h1>
+          <h1>Devil Store Tracker</h1>
           <p class="lead">Neon cyberpunk status board</p>
         </div>
       </div>
@@ -135,7 +125,6 @@
         <small style="color:var(--muted)">Last updated: <span id="lastUpdated">—</span></small>
       </div>
     </header>
-
     <div class="card">
       <div class="controls">
         <div class="search">
@@ -148,8 +137,7 @@
         </select>
         <button id="reset">Reset</button>
       </div>
-
-      <table>
+      <table id="productTable">
         <thead>
           <tr>
             <th>Software / Item</th>
@@ -160,18 +148,18 @@
         </thead>
         <tbody id="list"></tbody>
       </table>
-
       <div class="legend">
         <span><span class="badge ok">✔ Undetected</span> Safe</span>
         <span><span class="badge bad">✖ Detected</span> Risky</span>
+        <!-- Buttons inside legend -->
+        <button id="showBtn">Show All Products</button>
+        <button id="closeBtn" style="display:none;">Close</button>
       </div>
-
       <p class="footer">
         ⚠ <strong>Disclaimer:</strong> This page only shows statuses. For tracking info only.
       </p>
     </div>
   </div>
-
   <script>
     const DATA = [
       { name: 'FECURITY', game: 'Call of Duty', status: 'undetected', note: '' },
@@ -187,6 +175,9 @@
     const q = document.getElementById('q');
     const filter = document.getElementById('filter');
     const reset = document.getElementById('reset');
+    const showBtn = document.getElementById('showBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const table = document.getElementById('productTable');
     const lastUpdated = document.getElementById('lastUpdated');
 
     function makeRow(item){
@@ -194,22 +185,18 @@
       const tdName = document.createElement('td');
       tdName.innerHTML = '<div class="name">' + item.name + '</div><div class="meta">' + item.game + '</div>';
       tr.appendChild(tdName);
-
       const tdGame = document.createElement('td');
       tdGame.textContent = item.game;
       tr.appendChild(tdGame);
-
       const tdStatus = document.createElement('td');
       const span = document.createElement('span');
       span.className = 'badge ' + (item.status === 'undetected' ? 'ok' : 'bad');
       span.textContent = (item.status === 'undetected' ? 'Undetected' : 'Detected');
       tdStatus.appendChild(span);
       tr.appendChild(tdStatus);
-
       const tdNote = document.createElement('td');
       tdNote.textContent = item.note || '—';
       tr.appendChild(tdNote);
-
       return tr;
     }
 
@@ -236,13 +223,29 @@
         return (item.name + ' ' + item.game).toLowerCase().includes(qv);
       });
       render(filtered);
+      table.style.display = 'table';
     }
 
     q.addEventListener('input', applyFilters);
     filter.addEventListener('change', applyFilters);
-    reset.addEventListener('click', ()=>{q.value='';filter.value='all';applyFilters();});
+    reset.addEventListener('click', ()=>{
+      q.value='';filter.value='all';applyFilters();
+    });
 
-    render(DATA);
+    showBtn.addEventListener('click', ()=>{
+      table.style.display = 'table';
+      render(DATA);
+      lastUpdated.textContent = new Date().toLocaleString();
+      showBtn.style.display = 'none';
+      closeBtn.style.display = 'inline-block';
+    });
+
+    closeBtn.addEventListener('click', ()=>{
+      table.style.display = 'none';
+      closeBtn.style.display = 'none';
+      showBtn.style.display = 'inline-block';
+    });
+
     lastUpdated.textContent = new Date().toLocaleString();
   </script>
 </body>
