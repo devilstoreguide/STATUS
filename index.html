@@ -5,123 +5,334 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cheat Status Dashboard — Neon</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
     :root{
       --bg: #05010a;
-      --card: #0a0a1a;
-      --muted: #7f8c99;
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff2d9c;
+      --neon-purple: #8b5cf6;
       --accent: #ff00ff;
       --ok: #00ffcc;
       --bad: #ff0066;
-      --glass: rgba(255,255,255,0.05);
-      --radius: 14px;
+      --glass: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+      --radius: 16px;
     }
+    
     html,body{
       height:100%;
       margin:0;
-      background: radial-gradient(circle at top, #0a0020, #05010a 70%);
-      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at 20% 80%, #0a0020, #05010a 40%, #02040a);
+      font-family: 'Orbitron', monospace;
       color: #eaf6ff;
+      overflow-x: hidden;
     }
-    .wrap{max-width: 980px;margin: 40px auto;padding: 20px;}
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px;}
-    .brand{display:flex;gap:14px;align-items:center;}
+    
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(2px 2px at 20px 30px, rgba(0,255,204,0.15), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,0,255,0.1), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(0,240,255,0.2), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(139,92,246,0.15), transparent);
+      background-size: 200px 200px;
+      animation: sparkle 20s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    @keyframes sparkle {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-200px); }
+    }
+    
+    .wrap{
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 30px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    header{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:40px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(0,255,255,0.2);
+    }
+    
+    .brand{
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+    
     .logo{
-      width:60px;height:60px;
-      border-radius:12px;
-      background: linear-gradient(135deg,#ff00ff,#00ffff);
-      display:flex;align-items:center;justify-content:center;
-      font-weight:800;color:white;font-size:20px;letter-spacing:1px;
-      text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff;
-      box-shadow: 0 0 25px #ff00ff, inset 0 0 20px #00ffff;
+      width:80px;
+      height:80px;
+      border-radius:16px;
+      background: conic-gradient(from 0deg, #ff00ff, #00ffff, #ff2d9c, #8b5cf6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      color:white;
+      font-size:28px;
+      letter-spacing:2px;
+      text-shadow: 0 0 15px #fff, 0 0 30px #ff00ff, 0 0 45px #00ffff;
+      box-shadow: 
+        0 0 40px rgba(255,0,255,0.4), 
+        inset 0 0 30px rgba(0,255,255,0.3),
+        0 8px 32px rgba(0,0,0,0.6);
+      position: relative;
+      animation: logoGlow 3s ease-in-out infinite alternate;
     }
-    h1{margin:0;font-size:22px;font-weight:700;line-height:1;text-shadow: 0 0 10px var(--accent);}
-    p.lead{margin:0;color:var(--muted);font-size:14px;}
+    
+    @keyframes logoGlow {
+      0% { transform: scale(1); box-shadow: 0 0 40px rgba(255,0,255,0.4), inset 0 0 30px rgba(0,255,255,0.3); }
+      100% { transform: scale(1.05); box-shadow: 0 0 60px rgba(255,0,255,0.6), inset 0 0 40px rgba(0,255,255,0.4); }
+    }
+    
+    h1{
+      margin:0;
+      font-size:32px;
+      font-weight:900;
+      line-height:1.2;
+      background: linear-gradient(45deg, #ff00ff, #00ffff, #ff2d9c);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255,0,255,0.5);
+      animation: titleShimmer 4s ease-in-out infinite;
+    }
+    
+    @keyframes titleShimmer {
+      0%, 100% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(30deg); }
+    }
+    
+    p.lead{
+      margin:8px 0 0 0;
+      color:#7f8c99;
+      font-size:16px;
+      font-weight: 500;
+    }
+    
+    .update-info {
+      text-align:right;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+    
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+      background: linear-gradient(180deg, var(--glass), rgba(255,255,255,0.02));
       border-radius: var(--radius);
-      padding:20px;
-      box-shadow: 0 0 20px rgba(255,0,255,0.3), 0 0 40px rgba(0,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.1);
+      padding:40px;
+      box-shadow: 
+        0 0 40px rgba(255,0,255,0.2), 
+        0 0 80px rgba(0,255,255,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
     }
-    .controls{display:flex;gap:10px;margin: 16px 0 20px 0;flex-wrap:wrap;}
-    .search{
-      flex:1 1 320px;
-      display:flex;align-items:center;gap:8px;
-      background:var(--glass);
-      padding:8px 12px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.1);
-      box-shadow: inset 0 0 8px rgba(0,255,255,0.2);
+    
+    /* Hologram effect */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.1), transparent);
+      animation: hologramScan 8s linear infinite;
     }
-    .search input{
-      background:transparent;
-      border:0;
-      outline:0;
-      color:#fff;
-      font-size:14px;
+    
+    @keyframes hologramScan {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    table{
       width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+      font-size:15px;
+      position: relative;
+      z-index: 2;
     }
-    select, button{
-      padding:8px 12px;
-      border-radius:10px;
-      border:0;
-      background:linear-gradient(90deg,#ff00ff33,#00ffff33);
-      color:#fff;
-      cursor:pointer;
-      font-size:13px;
-      min-height:40px;
-      box-shadow: 0 0 10px rgba(255,0,255,0.4), inset 0 0 8px rgba(0,255,255,0.3);
-      transition: 0.2s ease;
-    }
-    select:hover, button:hover{ transform: scale(1.05); }
-    table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px; display:none;}
+    
     thead th{
-      text-align:left;font-size:12px;color:var(--muted);
-      padding:12px 10px;text-transform:uppercase;letter-spacing:1px;
+      text-align:left;
+      font-size:14px;
+      color:#7f8c99;
+      padding:20px 15px;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      font-weight: 700;
+      border-bottom: 2px solid rgba(0,255,255,0.3);
+      background: linear-gradient(90deg, rgba(255,0,255,0.1), rgba(0,255,255,0.05));
     }
+    
     tbody tr{
       background: linear-gradient(90deg, rgba(255,0,255,0.04), rgba(0,255,255,0.04));
-      border-radius:8px;
-      transition: transform .15s ease, box-shadow .15s ease;
+      border-radius:12px;
+      transition: all .3s ease;
+      border: 1px solid transparent;
+      margin-bottom: 8px;
     }
+    
     tbody tr:hover{
-      transform: translateY(-3px);
-      box-shadow: 0 0 20px rgba(255,0,255,0.3), 0 0 20px rgba(0,255,255,0.2);
+      transform: translateY(-5px) scale(1.02);
+      background: linear-gradient(90deg, rgba(255,0,255,0.12), rgba(0,255,255,0.12));
+      box-shadow: 
+        0 0 30px rgba(255,0,255,0.3), 
+        0 0 60px rgba(0,255,255,0.2),
+        0 10px 40px rgba(0,0,0,0.4);
+      border: 1px solid rgba(0,255,255,0.4);
     }
-    td{padding:12px 10px;vertical-align:middle;border-top:1px solid rgba(255,255,255,0.08);}
+    
+    td{
+      padding:18px 15px;
+      vertical-align:middle;
+      border-top:1px solid rgba(255,255,255,0.06);
+    }
+    
     .badge{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 12px;border-radius:999px;font-weight:700;
-      font-size:13px;color:white;text-transform:uppercase;
-      text-shadow: 0 0 5px currentColor;
-    }
-    .ok{ background: rgba(0,255,204,0.1); color:var(--ok); border:1px solid var(--ok); box-shadow: 0 0 10px var(--ok); }
-    .bad{ background: rgba(255,0,102,0.1); color:var(--bad); border:1px solid var(--bad); box-shadow: 0 0 10px var(--bad); }
-    .name{font-weight:700;font-size:15px;}
-    .meta{font-size:12px;color:var(--muted);margin-top:6px;}
-    .legend{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap;}
-    .legend span{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
-    .footer{margin-top:20px;font-size:12px;color:var(--muted);}
-    
-    /* Single product highlight */
-    .single-product{
-      background: linear-gradient(90deg, rgba(255,0,255,0.15), rgba(0,255,255,0.15));
-      border: 2px solid rgba(255,0,255,0.3);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 16px;
+      border-radius:25px;
+      font-weight:700;
+      font-size:14px;
+      color:white;
+      text-transform:uppercase;
+      text-shadow: 0 0 8px currentColor;
+      position: relative;
+      overflow: hidden;
     }
     
-    /* Product focused mode */
+    .badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: badgeShine 3s ease-in-out infinite;
+    }
+    
+    @keyframes badgeShine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: -100%; }
+    }
+    
+    .ok{ 
+      background: linear-gradient(135deg, rgba(0,255,204,0.2), rgba(0,255,140,0.15)); 
+      color:var(--ok); 
+      border:2px solid var(--ok); 
+      box-shadow: 0 0 20px var(--ok), inset 0 0 10px rgba(0,255,204,0.1); 
+    }
+    
+    .bad{ 
+      background: linear-gradient(135deg, rgba(255,0,102,0.2), rgba(255,20,60,0.15)); 
+      color:var(--bad); 
+      border:2px solid var(--bad); 
+      box-shadow: 0 0 20px var(--bad), inset 0 0 10px rgba(255,0,102,0.1); 
+    }
+    
+    .name{
+      font-weight:800;
+      font-size:18px;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+    
+    .meta{
+      font-size:13px;
+      color:#7f8c99;
+      margin-top:6px;
+      font-weight: 600;
+    }
+    
+    .legend{
+      display:flex;
+      gap:30px;
+      align-items:center;
+      margin-top:30px;
+      flex-wrap:wrap;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    
+    .legend span{
+      display:inline-flex;
+      gap:12px;
+      align-items:center;
+      font-size:15px;
+      color:#7f8c99;
+      font-weight: 600;
+    }
+    
+    .footer{
+      margin-top:30px;
+      font-size:13px;
+      color:#7f8c99;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(255,0,255,0.05), rgba(0,255,255,0.03));
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    /* Product focused mode - enhanced */
     .product-focused {
-      background: linear-gradient(135deg, rgba(255,0,255,0.1), rgba(0,255,255,0.1));
-      border: 2px solid rgba(0,255,255,0.4);
-      box-shadow: 0 0 30px rgba(0,255,255,0.3), 0 0 60px rgba(255,0,255,0.2);
+      background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(0,255,255,0.15)) !important;
+      border: 2px solid rgba(0,255,255,0.6) !important;
+      box-shadow: 
+        0 0 40px rgba(0,255,255,0.4), 
+        0 0 80px rgba(255,0,255,0.3),
+        0 15px 50px rgba(0,0,0,0.5) !important;
+      animation: focusedGlow 2s ease-in-out infinite alternate;
     }
     
-    @media (max-width:720px){
+    @keyframes focusedGlow {
+      0% { box-shadow: 0 0 40px rgba(0,255,255,0.4), 0 0 80px rgba(255,0,255,0.3); }
+      100% { box-shadow: 0 0 60px rgba(0,255,255,0.6), 0 0 100px rgba(255,0,255,0.4); }
+    }
+    
+    @media (max-width:768px){
+      .wrap { padding: 20px; margin: 30px auto; }
+      header { flex-direction: column; gap: 15px; text-align: center; }
+      .logo { width: 60px; height: 60px; font-size: 20px; }
+      h1 { font-size: 24px; }
+      .card { padding: 25px; }
+      
       thead{display:none}
-      tbody td{ display:block; width:100% ; padding:10px 8px;}
-      tbody tr{ margin-bottom:14px; display:block; border-radius:12px; overflow:hidden; }
-      .controls{ gap:8px }
+      tbody td{ display:block; width:100%; padding:12px 15px; border-top: none; }
+      tbody tr{ margin-bottom:20px; display:block; border-radius:12px; overflow:hidden; }
+      
+      .legend { gap: 15px; }
     }
   </style>
 </head>
@@ -135,24 +346,12 @@
           <p class="lead" id="pageSubtitle">Neon cyberpunk status board</p>
         </div>
       </div>
-      <div style="text-align:right">
+      <div class="update-info">
         <small style="color:var(--muted)">Last updated: <span id="lastUpdated">—</span></small>
       </div>
     </header>
     
     <div class="card">
-      <div class="controls">
-        <div class="search">
-          <input id="q" type="search" placeholder="Search by name (e.g. PUBG, ARCAN)..." aria-label="Search items">
-        </div>
-        <select id="filter">
-          <option value="all">All statuses</option>
-          <option value="undetected">Undetected only</option>
-          <option value="detected">Detected only</option>
-        </select>
-        <button id="reset">Reset</button>
-      </div>
-      
       <table id="productTable">
         <thead>
           <tr>
@@ -166,14 +365,12 @@
       </table>
       
       <div class="legend">
-        <span><span class="badge ok">✔ Undetected</span> Safe</span>
-        <span><span class="badge bad">✖ Detected</span> Risky</span>
-        <button id="showBtn">Show All Products</button>
-        <button id="closeBtn" style="display:none;">Close</button>
+        <span><span class="badge ok">✔ Undetected</span> Safe to use</span>
+        <span><span class="badge bad">✖ Detected</span> High risk</span>
       </div>
       
       <p class="footer">
-        ⚠ <strong>Disclaimer:</strong> This page only shows statuses. For tracking info only.
+        ⚠ <strong>Disclaimer:</strong> This page only shows current status information. Use for tracking purposes only.
       </p>
     </div>
   </div>
@@ -190,14 +387,9 @@
     ];
     
     const tbody = document.getElementById('list');
-    const q = document.getElementById('q');
-    const filter = document.getElementById('filter');
-    const reset = document.getElementById('reset');
-    const showBtn = document.getElementById('showBtn');
-    const closeBtn = document.getElementById('closeBtn');
-    const table = document.getElementById('productTable');
     const lastUpdated = document.getElementById('lastUpdated');
     const pageSubtitle = document.getElementById('pageSubtitle');
+    const productTable = document.getElementById('productTable');
     
     // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -234,7 +426,7 @@
       tbody.innerHTML = '';
       if(list.length === 0){
         const tr = document.createElement('tr');
-        tr.innerHTML = '<td colspan="4" style="padding:18px;color:var(--muted)">No results found.</td>';
+        tr.innerHTML = '<td colspan="4" style="padding:30px;color:var(--muted);text-align:center;font-size:16px;">No results found.</td>';
         tbody.appendChild(tr);
         return;
       }
@@ -244,20 +436,6 @@
       }
     }
     
-    function applyFilters(){
-      const qv = q.value.trim().toLowerCase();
-      const fv = filter.value;
-      const filtered = DATA.filter(item=>{
-        if(fv === 'undetected' && item.status !== 'undetected') return false;
-        if(fv === 'detected' && item.status !== 'detected') return false;
-        if(qv === '') return true;
-        return (item.name + ' ' + item.game).toLowerCase().includes(qv);
-      });
-      render(filtered);
-      table.style.display = 'table';
-    }
-    
-    // Initialize page based on URL parameters
     function initializePage(){
       if(targetProduct && targetGame){
         // Show specific product
@@ -268,41 +446,20 @@
         
         if(targetItem.length > 0){
           render(targetItem);
-          table.style.display = 'table';
-          showBtn.style.display = 'none';
-          closeBtn.style.display = 'inline-block';
         } else {
           // If product not found, show all
           render(DATA);
-          table.style.display = 'table';
           pageSubtitle.textContent = `Product "${targetProduct}" not found - Showing all products`;
         }
       } else {
-        // Normal behavior - show button to reveal all
+        // Show all products
         pageSubtitle.textContent = 'Neon cyberpunk status board';
+        render(DATA);
       }
+      
+      productTable.style.display = 'table';
       lastUpdated.textContent = new Date().toLocaleString();
     }
-    
-    q.addEventListener('input', applyFilters);
-    filter.addEventListener('change', applyFilters);
-    reset.addEventListener('click', ()=>{
-      q.value='';filter.value='all';applyFilters();
-    });
-    
-    showBtn.addEventListener('click', ()=>{
-      table.style.display = 'table';
-      render(DATA);
-      lastUpdated.textContent = new Date().toLocaleString();
-      showBtn.style.display = 'none';
-      closeBtn.style.display = 'inline-block';
-    });
-    
-    closeBtn.addEventListener('click', ()=>{
-      table.style.display = 'none';
-      closeBtn.style.display = 'none';
-      showBtn.style.display = 'inline-block';
-    });
     
     // Initialize the page
     initializePage();
