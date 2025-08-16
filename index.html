@@ -151,8 +151,9 @@
       <div class="legend">
         <span><span class="badge ok">✔ Undetected</span> Safe</span>
         <span><span class="badge bad">✖ Detected</span> Risky</span>
-        <!-- Button added here -->
+        <!-- Buttons inside legend -->
         <button id="showBtn">Show All Products</button>
+        <button id="closeBtn" style="display:none;">Close</button>
       </div>
       <p class="footer">
         ⚠ <strong>Disclaimer:</strong> This page only shows statuses. For tracking info only.
@@ -169,11 +170,13 @@
       { name: 'DODO', game: 'PUBG', status: 'undetected', note: '' },
       { name: 'IO', game: 'PUBG', status: 'undetected', note: '' }
     ];
+
     const tbody = document.getElementById('list');
     const q = document.getElementById('q');
     const filter = document.getElementById('filter');
     const reset = document.getElementById('reset');
     const showBtn = document.getElementById('showBtn');
+    const closeBtn = document.getElementById('closeBtn');
     const table = document.getElementById('productTable');
     const lastUpdated = document.getElementById('lastUpdated');
 
@@ -220,7 +223,7 @@
         return (item.name + ' ' + item.game).toLowerCase().includes(qv);
       });
       render(filtered);
-      table.style.display = 'table'; // show table when filtering
+      table.style.display = 'table';
     }
 
     q.addEventListener('input', applyFilters);
@@ -228,11 +231,19 @@
     reset.addEventListener('click', ()=>{
       q.value='';filter.value='all';applyFilters();
     });
+
     showBtn.addEventListener('click', ()=>{
       table.style.display = 'table';
       render(DATA);
       lastUpdated.textContent = new Date().toLocaleString();
       showBtn.style.display = 'none';
+      closeBtn.style.display = 'inline-block';
+    });
+
+    closeBtn.addEventListener('click', ()=>{
+      table.style.display = 'none';
+      closeBtn.style.display = 'none';
+      showBtn.style.display = 'inline-block';
     });
 
     lastUpdated.textContent = new Date().toLocaleString();
