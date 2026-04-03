@@ -14,6 +14,7 @@
       --accent: #ff00ff;
       --ok: #00ffcc;
       --bad: #ff0066;
+      --warn: #ffcc00; /* New color for Updating */
       --glass: rgba(255,255,255,0.06);
       --glass-border: rgba(255,255,255,0.12);
       --radius: 16px;
@@ -28,7 +29,6 @@
       overflow-x: hidden;
     }
     
-    /* Animated background particles */
     body::before {
       content: '';
       position: fixed;
@@ -112,19 +112,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 20px rgba(255,0,255,0.5);
-      animation: titleShimmer 4s ease-in-out infinite;
-    }
-    
-    @keyframes titleShimmer {
-      0%, 100% { filter: hue-rotate(0deg); }
-      50% { filter: hue-rotate(30deg); }
-    }
-    
-    p.lead{
-      margin:8px 0 0 0;
-      color:#7f8c99;
-      font-size:16px;
-      font-weight: 500;
     }
     
     .update-info {
@@ -141,30 +128,11 @@
       border-radius: var(--radius);
       padding:40px;
       box-shadow: 
-        0 0 40px rgba(255,0,255,0.2), 
-        0 0 80px rgba(0,255,255,0.15),
-        inset 0 1px 0 rgba(255,255,255,0.1);
+        0 0 40px rgba(255,0,255,0.1), 
+        0 0 80px rgba(0,255,255,0.05);
       border: 1px solid var(--glass-border);
       backdrop-filter: blur(20px);
       position: relative;
-      overflow: hidden;
-    }
-    
-    /* Hologram effect */
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.1), transparent);
-      animation: hologramScan 8s linear infinite;
-    }
-    
-    @keyframes hologramScan {
-      0% { left: -100%; }
-      100% { left: 100%; }
     }
     
     table{
@@ -172,8 +140,6 @@
       border-collapse:collapse;
       margin-top:20px;
       font-size:15px;
-      position: relative;
-      z-index: 2;
     }
     
     thead th{
@@ -183,27 +149,17 @@
       padding:20px 15px;
       text-transform:uppercase;
       letter-spacing:2px;
-      font-weight: 700;
       border-bottom: 2px solid rgba(0,255,255,0.3);
-      background: linear-gradient(90deg, rgba(255,0,255,0.1), rgba(0,255,255,0.05));
     }
     
     tbody tr{
-      background: linear-gradient(90deg, rgba(255,0,255,0.04), rgba(0,255,255,0.04));
-      border-radius:12px;
+      background: rgba(255,255,255,0.02);
       transition: all .3s ease;
-      border: 1px solid transparent;
-      margin-bottom: 8px;
     }
     
     tbody tr:hover{
-      transform: translateY(-5px) scale(1.02);
-      background: linear-gradient(90deg, rgba(255,0,255,0.12), rgba(0,255,255,0.12));
-      box-shadow: 
-        0 0 30px rgba(255,0,255,0.3), 
-        0 0 60px rgba(0,255,255,0.2),
-        0 10px 40px rgba(0,0,0,0.4);
-      border: 1px solid rgba(0,255,255,0.4);
+      transform: scale(1.01);
+      background: rgba(255,255,255,0.05);
     }
     
     td{
@@ -219,120 +175,58 @@
       padding:8px 16px;
       border-radius:25px;
       font-weight:700;
-      font-size:14px;
-      color:white;
+      font-size:12px;
       text-transform:uppercase;
       text-shadow: 0 0 8px currentColor;
-      position: relative;
-      overflow: hidden;
     }
     
-    .badge::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      animation: badgeShine 3s ease-in-out infinite;
-    }
-    
-    @keyframes badgeShine {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: -100%; }
-    }
-    
+    /* Status Styles */
     .ok{ 
-      background: linear-gradient(135deg, rgba(0,255,204,0.2), rgba(0,255,140,0.15)); 
+      background: rgba(0,255,204,0.1); 
       color:var(--ok); 
-      border:2px solid var(--ok); 
-      box-shadow: 0 0 20px var(--ok), inset 0 0 10px rgba(0,255,204,0.1); 
+      border:1px solid var(--ok); 
     }
-    
     .bad{ 
-      background: linear-gradient(135deg, rgba(255,0,102,0.2), rgba(255,20,60,0.15)); 
+      background: rgba(255,0,102,0.1); 
       color:var(--bad); 
-      border:2px solid var(--bad); 
-      box-shadow: 0 0 20px var(--bad), inset 0 0 10px rgba(255,0,102,0.1); 
+      border:1px solid var(--bad); 
+    }
+    .updating{ 
+      background: rgba(255,204,0,0.1); 
+      color:var(--warn); 
+      border:1px solid var(--warn); 
     }
     
-    .name{
-      font-weight:800;
-      font-size:18px;
-      color: #ffffff;
-      text-shadow: 0 0 10px rgba(255,255,255,0.5);
-    }
-    
-    .meta{
-      font-size:13px;
-      color:#7f8c99;
-      margin-top:6px;
-      font-weight: 600;
-    }
+    .name{ font-weight:800; font-size:18px; color: #ffffff; }
+    .meta{ font-size:13px; color:#7f8c99; margin-top:4px; }
     
     .legend{
       display:flex;
-      gap:30px;
-      align-items:center;
-      margin-top:30px;
-      flex-wrap:wrap;
+      gap:20px;
       justify-content: center;
+      margin-top:30px;
       padding: 20px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      background: rgba(0,0,0,0.2);
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    
-    .legend span{
-      display:inline-flex;
-      gap:12px;
-      align-items:center;
-      font-size:15px;
-      color:#7f8c99;
-      font-weight: 600;
+      flex-wrap: wrap;
     }
     
     .footer{
       margin-top:30px;
-      font-size:13px;
+      font-size:12px;
       color:#7f8c99;
       text-align: center;
-      padding: 20px;
-      background: linear-gradient(135deg, rgba(255,0,255,0.05), rgba(0,255,255,0.03));
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.05);
     }
     
-    /* Product focused mode - enhanced */
     .product-focused {
-      background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(0,255,255,0.15)) !important;
-      border: 2px solid rgba(0,255,255,0.6) !important;
-      box-shadow: 
-        0 0 40px rgba(0,255,255,0.4), 
-        0 0 80px rgba(255,0,255,0.3),
-        0 15px 50px rgba(0,0,0,0.5) !important;
-      animation: focusedGlow 2s ease-in-out infinite alternate;
+      border: 2px solid var(--neon-cyan) !important;
+      box-shadow: 0 0 30px rgba(0,240,255,0.3);
     }
-    
-    @keyframes focusedGlow {
-      0% { box-shadow: 0 0 40px rgba(0,255,255,0.4), 0 0 80px rgba(255,0,255,0.3); }
-      100% { box-shadow: 0 0 60px rgba(0,255,255,0.6), 0 0 100px rgba(255,0,255,0.4); }
-    }
-    
+
     @media (max-width:768px){
-      .wrap { padding: 20px; margin: 30px auto; }
-      header { flex-direction: column; gap: 15px; text-align: center; }
-      .logo { width: 60px; height: 60px; font-size: 20px; }
-      h1 { font-size: 24px; }
-      .card { padding: 25px; }
-      
       thead{display:none}
-      tbody td{ display:block; width:100%; padding:12px 15px; border-top: none; }
-      tbody tr{ margin-bottom:20px; display:block; border-radius:12px; overflow:hidden; }
-      
-      .legend { gap: 15px; }
+      tbody td{ display:block; width:100%; padding:10px 15px; }
+      tbody tr{ margin-bottom:15px; display:block; }
     }
   </style>
 </head>
@@ -343,11 +237,11 @@
         <div class="logo">ST</div>
         <div>
           <h1>Status Tracker</h1>
-          <p class="lead" id="pageSubtitle">Neon cyberpunk status board</p>
+          <p class="lead" id="pageSubtitle">System Monitor</p>
         </div>
       </div>
       <div class="update-info">
-        <small style="color:var(--muted)">Last updated: <span id="lastUpdated">—</span></small>
+        <small>LIVE STATUS: <span id="lastUpdated">—</span></small>
       </div>
     </header>
     
@@ -355,7 +249,7 @@
       <table id="productTable">
         <thead>
           <tr>
-            <th>Software / Item</th>
+            <th>Software</th>
             <th>Game</th>
             <th>Status</th>
             <th>Notes</th>
@@ -365,120 +259,69 @@
       </table>
       
       <div class="legend">
-        <span><span class="badge ok">✔ Undetected</span> Safe to use</span>
-        <span><span class="badge bad">✖ Detected</span> High risk</span>
+        <span><span class="badge ok">✔ Undetected</span> Safe</span>
+        <span><span class="badge updating">⚙ Updating</span> Maintenance</span>
+        <span><span class="badge bad">⚠ Use At Own Risk</span> High Risk</span>
       </div>
       
       <p class="footer">
-        ⚠ <strong>Disclaimer:</strong> This page only shows current status information. Use for tracking purposes only.
+        ⚠ <strong>Disclaimer:</strong> This dashboard is for informational purposes only. Use software at your own discretion.
       </p>
     </div>
   </div>
   
   <script>
+    /* STATUS KEYS: 
+       'undetected' -> Cyan (Safe)
+       'updating'   -> Amber (Maintenance)
+       'risk'       -> Pink/Red (Use at own risk)
+    */
     const DATA = [
-      { name: 'FECURITY', game: 'Call of Duty', status: 'undetected', note: '' },
-      { name: 'DULLWAVE', game: 'Call of Duty', status: 'undetected', note: '' },
-      { name: 'ARCAN', game: 'Apex Legend', status: 'undetected', note: '' },
-      { name: 'BSS', game: 'PUBG', status: 'undetected', note: '' },
-      { name: 'ARCAN', game: 'PUBG', status: 'detected', note: '' },
-      { name: 'DODO', game: 'PUBG', status: 'undetected', note: '' },
-      { name: 'ARES ARC RAIDERS', game: 'ARC RAIDERS', status: 'undetected', note: '' },
-      { name: 'ANCIENT ARC RAIDERS', game: 'ARC RAIDERS', status: 'undetected', note: '' },
-      { name: 'OWO', game: 'PUBG', status: 'undetected', note: '' },
-      { name: 'IO', game: 'PUBG', status: 'undetected', note: '' }
+      { name: 'FECURITY', game: 'Call of Duty', status: 'undetected', note: 'product is updated you can play now' },
+      { name: 'DULLWAVE', game: 'Call of Duty', status: 'undetected', note: 'product is updated you can play now' },
+      { name: 'ARCAN', game: 'Apex Legend', status: 'undetected', note: 'product is updated you can play now' },
+      { name: 'BSS', game: 'PUBG', status: 'undetected', note: 'The product is updated you can play now' },
+      { name: 'ARCAN', game: 'PUBG', status: 'risk', note: 'Use with caution' },
+      { name: 'DODO', game: 'PUBG', status: 'undetected', note: 'product is updated you can play now' },
+      { name: 'ARES ARC RAIDERS', game: 'ARC RAIDERS', status: 'undetected', note: 'product is updated you can play now' },
+      { name: 'ANCIENT ARC RAIDERS', game: 'ARC RAIDERS', status: 'undetected', note: 'product is updated you can play now' },
+      { name: 'OWO', game: 'PUBG', status: 'undetected', note: 'product is updated you can play now' },
+      { name: 'IO', game: 'PUBG', status: 'undetected', note: 'product is updated you can play now' }
     ];
     
     const tbody = document.getElementById('list');
     const lastUpdated = document.getElementById('lastUpdated');
-    const pageSubtitle = document.getElementById('pageSubtitle');
-    const productTable = document.getElementById('productTable');
     
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const targetProduct = urlParams.get('product');
-    const targetGame = urlParams.get('game');
-    
-    function makeRow(item, isHighlighted = false){
+    function getStatusConfig(status) {
+      switch(status) {
+        case 'undetected': return { class: 'ok', text: '✔ Undetected' };
+        case 'updating':   return { class: 'updating', text: '⚙ Updating' };
+        case 'risk':       return { class: 'bad', text: '⚠ Use At Own Risk' };
+        default:           return { class: '', text: status };
+      }
+    }
+
+    function makeRow(item){
       const tr = document.createElement('tr');
-      if(isHighlighted) tr.className = 'product-focused';
+      const config = getStatusConfig(item.status);
       
-      const tdName = document.createElement('td');
-      tdName.innerHTML = '<div class="name">' + item.name + '</div><div class="meta">' + item.game + '</div>';
-      tr.appendChild(tdName);
-      
-      const tdGame = document.createElement('td');
-      tdGame.textContent = item.game;
-      tr.appendChild(tdGame);
-      
-      const tdStatus = document.createElement('td');
-      const span = document.createElement('span');
-      span.className = 'badge ' + (item.status === 'undetected' ? 'ok' : 'bad');
-      span.textContent = (item.status === 'undetected' ? '✔ Undetected' : '✖ Detected');
-      tdStatus.appendChild(span);
-      tr.appendChild(tdStatus);
-      
-      const tdNote = document.createElement('td');
-      tdNote.textContent = item.note || '—';
-      tr.appendChild(tdNote);
-      
+      tr.innerHTML = `
+        <td><div class="name">${item.name}</div><div class="meta">${item.game}</div></td>
+        <td>${item.game}</td>
+        <td><span class="badge ${config.class}">${config.text}</span></td>
+        <td>${item.note || '—'}</td>
+      `;
       return tr;
     }
     
     function render(list){
       tbody.innerHTML = '';
-      if(list.length === 0){
-        const tr = document.createElement('tr');
-        tr.innerHTML = '<td colspan="4" style="padding:30px;color:var(--muted);text-align:center;font-size:16px;">No results found.</td>';
-        tbody.appendChild(tr);
-        return;
-      }
-      for(const item of list){
-        const isHighlighted = targetProduct && item.name === targetProduct && item.game === targetGame;
-        tbody.appendChild(makeRow(item, isHighlighted));
-      }
+      list.forEach(item => tbody.appendChild(makeRow(item)));
     }
     
-    function initializePage(){
-      if(targetProduct && targetGame){
-        // Show specific product
-        pageSubtitle.textContent = `Status for ${targetProduct} - ${targetGame}`;
-        
-        // Filter to show only the target product
-        const targetItem = DATA.filter(item => item.name === targetProduct && item.game === targetGame);
-        
-        if(targetItem.length > 0){
-          render(targetItem);
-        } else {
-          // If product not found, show all
-          render(DATA);
-          pageSubtitle.textContent = `Product "${targetProduct}" not found - Showing all products`;
-        }
-      } else {
-        // Show all products
-        pageSubtitle.textContent = 'Neon cyberpunk status board';
-        render(DATA);
-      }
-      
-      productTable.style.display = 'table';
-      lastUpdated.textContent = new Date().toLocaleString();
-    }
-    
-    // Initialize the page
-    initializePage();
+    // Initialize
+    render(DATA);
+    lastUpdated.textContent = new Date().toLocaleTimeString();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
