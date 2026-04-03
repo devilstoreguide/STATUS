@@ -24,6 +24,12 @@ body{
   color:#fff;
 }
 
+/* 🔥 FIX: BACKGROUND NOT BLOCKING CLICK */
+body::before,
+body::after{
+  pointer-events:none;
+}
+
 /* GRID BG */
 body::before{
   content:'';
@@ -45,6 +51,7 @@ body::after{
   background:linear-gradient(transparent, rgba(0,255,255,0.05), transparent);
   animation:scan 6s linear infinite;
 }
+
 @keyframes scan{
   0%{transform:translateY(-100%)}
   100%{transform:translateY(100%)}
@@ -158,7 +165,6 @@ tbody tr:hover{
   border:2px solid var(--risk);
 }
 
-/* ALERT */
 @keyframes alert{
   from{box-shadow:0 0 10px var(--bad)}
   to{box-shadow:0 0 30px var(--bad)}
@@ -194,8 +200,11 @@ tbody tr:hover{
 <header>
   <div class="logo">🎮 DEVIL STORE</div>
 
-  <!-- DISCORD BUTTON -->
-  <a class="discord-btn" href="https://discord.gg/waKmmYAbtd" target="_blank">
+  <!-- ✅ WORKING DISCORD BUTTON -->
+  <a class="discord-btn"
+     href="https://discord.gg/waKmmYAbtd"
+     target="_blank"
+     rel="noopener noreferrer">
     Join Discord
   </a>
 </header>
@@ -219,7 +228,12 @@ tbody tr:hover{
 <div class="discord-panel">
   🚀 Join our Discord for live updates & support  
   <br><br>
-  <a class="discord-btn" href="https://discord.gg/waKmmYAbtd" target="_blank">
+
+  <!-- ✅ SECOND WORKING BUTTON -->
+  <a class="discord-btn"
+     href="https://discord.gg/waKmmYAbtd"
+     target="_blank"
+     rel="noopener noreferrer">
     CLICK TO JOIN
   </a>
 </div>
@@ -236,16 +250,12 @@ tbody tr:hover{
 const DATA = [
   { name:'FECURITY', game:'Call of Duty', status:'undetected' },
   { name:'DULLWAVE', game:'Call of Duty', status:'undetected' },
-
   { name:'ARCAN', game:'Apex Legend', status:'undetected' },
-
   { name:'BSS', game:'PUBG', status:'undetected' },
   { name:'ARCAN', game:'PUBG', status:'risk' },
-
   { name:'DODO', game:'PUBG', status:'undetected' },
   { name:'OWO', game:'PUBG', status:'undetected' },
   { name:'IO', game:'PUBG', status:'undetected' },
-
   { name:'ARES ARC RAIDERS', game:'ARC RAIDERS', status:'undetected' },
   { name:'ANCIENT ARC RAIDERS', game:'ARC RAIDERS', status:'undetected' }
 ];
@@ -270,7 +280,7 @@ function makeRow(item){
     <td><b>${item.name}</b></td>
     <td><span class="game-tag">${item.game}</span></td>
     <td><span class="badge ${cls}">${txt}</span></td>
-    <td>${item.note || '-'}</td>
+    <td>-</td>
   `;
   return tr;
 }
@@ -281,7 +291,6 @@ function render(){
 }
 
 render();
-document.getElementById('time').textContent=new Date().toLocaleString();
 
 </script>
 
