@@ -3,64 +3,60 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Gamer Status Tracker</title>
+<title>Game Status — Devil Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet" />
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
 :root{
-  --ok:#00ff88;
-  --bad:#ff0033;
-  --warn:#ffaa00;
-  --risk:#ffee00;
-  --discord:#5865F2;
+  --red:#e0002c;
+  --red-b:#ff2248;
+  --green:#00e87a;
+  --yellow:#ffdd00;
+  --orange:#ffaa00;
+  --disc:#5865F2;
+  --bg:#020209;
+  --bg1:#05050e;
+  --bg2:#0c0c18;
+  --bd:rgba(255,255,255,.07);
+  --bd2:rgba(255,255,255,.12);
+  --text:#eef0ff;
+  --muted:rgba(238,240,255,.45);
+  --muted2:rgba(238,240,255,.28);
 }
 
-/* BASE */
 body{
   margin:0;
-  font-family:'Orbitron',monospace;
-  background:#030308;
-  color:#fff;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
 }
 
-/* 🔥 FIX: BACKGROUND NOT BLOCKING CLICK */
-body::before,
-body::after{
-  pointer-events:none;
+/* Background orbs */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.o1{
+  position:absolute;width:900px;height:900px;
+  top:-400px;left:-300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,0,32,.18),rgba(224,0,44,.06) 45%,transparent 70%);
+  filter:blur(100px);
 }
-
-/* GRID BG */
-body::before{
-  content:'';
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:
-    linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
-  background-size:40px 40px;
-}
-
-/* SCANLINE */
-body::after{
-  content:'';
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:linear-gradient(transparent, rgba(0,255,255,0.05), transparent);
-  animation:scan 6s linear infinite;
-}
-
-@keyframes scan{
-  0%{transform:translateY(-100%)}
-  100%{transform:translateY(100%)}
+.o2{
+  position:absolute;width:700px;height:700px;
+  bottom:-300px;right:-200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(30,60,220,.14),rgba(88,101,242,.05) 45%,transparent 70%);
+  filter:blur(90px);
 }
 
 .wrap{
-  max-width:1100px;
-  margin:50px auto;
-  padding:20px;
+  position:relative;z-index:1;
+  max-width:900px;
+  margin:0 auto;
+  padding:48px 20px 80px;
 }
 
 /* HEADER */
@@ -68,230 +64,304 @@ header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:30px;
+  margin-bottom:40px;
+  flex-wrap:wrap;
+  gap:16px;
 }
 
 .logo{
-  font-size:28px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:'Orbitron',monospace;
+  font-size:1.15rem;
   font-weight:900;
-  color:#00ffff;
-  text-shadow:0 0 15px #00ffff;
+  letter-spacing:.14em;
+  color:#fff;
+  text-transform:uppercase;
+  text-decoration:none;
 }
 
-/* DISCORD BUTTON */
+.logo-icon{
+  width:38px;height:38px;
+  border-radius:10px;
+  background:rgba(224,0,44,.15);
+  border:1px solid rgba(224,0,44,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+}
+
+.page-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:4px 12px;border-radius:100px;
+  background:rgba(0,232,122,.08);
+  border:1px solid rgba(0,232,122,.22);
+  font-size:.65rem;font-weight:600;
+  color:var(--green);letter-spacing:.05em;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 5px var(--green);
+}
+
 .discord-btn{
-  padding:10px 20px;
-  border-radius:8px;
-  background:var(--discord);
-  color:#fff;
-  font-weight:700;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 20px;border-radius:9px;
+  background:var(--disc);
+  color:#fff;font-family:'Inter',sans-serif;
+  font-size:.82rem;font-weight:600;
   text-decoration:none;
-  box-shadow:0 0 15px var(--discord);
-  transition:.3s;
+  border:none;cursor:pointer;
+  transition:background .18s,transform .15s;
+  white-space:nowrap;
 }
-.discord-btn:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 25px var(--discord);
+.discord-btn:hover{background:#4752c4;transform:translateY(-2px);}
+.discord-btn svg{width:16px;height:16px;flex-shrink:0;}
+
+/* TITLE ROW */
+.title-row{
+  margin-bottom:28px;
 }
+.title-row h1{
+  font-family:'Orbitron',monospace;
+  font-size:1.4rem;font-weight:800;
+  letter-spacing:.06em;color:#fff;
+  margin-bottom:6px;
+}
+.title-row p{
+  font-size:.82rem;color:var(--muted);line-height:1.6;
+}
+
+/* SUMMARY PILLS */
+.summary{
+  display:flex;flex-wrap:wrap;gap:8px;
+  margin-bottom:24px;
+}
+.sum-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:100px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:.72rem;color:var(--muted);
+}
+.sum-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 
 /* CARD */
 .card{
-  background:rgba(0,0,0,.6);
-  border:1px solid rgba(0,255,255,.2);
-  border-radius:12px;
-  padding:20px;
-  box-shadow:0 0 40px rgba(0,255,255,.1);
+  background:rgba(255,255,255,.025);
+  border:1px solid var(--bd);
+  border-radius:14px;
+  overflow:hidden;
 }
 
 /* TABLE */
-table{
-  width:100%;
-  border-collapse:collapse;
-}
+table{width:100%;border-collapse:collapse;}
 
-th,td{
-  padding:14px;
+thead tr{
+  background:rgba(255,255,255,.03);
+  border-bottom:1px solid var(--bd);
+}
+th{
+  padding:12px 18px;
   text-align:left;
+  font-family:'Inter',sans-serif;
+  font-size:.62rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted2);
 }
 
-thead{
-  color:#00ffff;
+td{
+  padding:14px 18px;
+  font-family:'Inter',sans-serif;
+  font-size:.85rem;
+  color:rgba(238,240,255,.82);
+  border-bottom:1px solid rgba(255,255,255,.04);
+  vertical-align:middle;
 }
-
-tbody tr{
-  border-bottom:1px solid rgba(255,255,255,.05);
-  transition:.3s;
-}
-
-tbody tr:hover{
-  background:rgba(0,255,255,.08);
-  transform:scale(1.01);
-}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(255,255,255,.02);}
+td:first-child{font-weight:700;color:#fff;}
 
 /* GAME TAG */
 .game-tag{
-  padding:4px 10px;
-  border-radius:6px;
-  font-size:12px;
-  background:rgba(0,255,255,.1);
-  border:1px solid rgba(0,255,255,.3);
+  display:inline-block;
+  padding:3px 10px;border-radius:6px;
+  font-size:.72rem;font-weight:500;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(238,240,255,.65);
+  white-space:nowrap;
 }
 
 /* BADGES */
 .badge{
-  padding:6px 14px;
-  border-radius:20px;
-  font-weight:700;
-  text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border-radius:100px;
+  font-size:.68rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;
+  white-space:nowrap;
 }
+.bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
 
-/* STATUS */
-.ok{
-  color:var(--ok);
-  border:2px solid var(--ok);
-  box-shadow:0 0 10px var(--ok);
-}
-.bad{
-  color:var(--bad);
-  border:2px solid var(--bad);
-  animation:alert 0.8s infinite alternate;
-}
-.updating{
-  color:var(--warn);
-  border:2px solid var(--warn);
-}
-.risk{
-  color:var(--risk);
-  border:2px solid var(--risk);
-}
-
-@keyframes alert{
-  from{box-shadow:0 0 10px var(--bad)}
-  to{box-shadow:0 0 30px var(--bad)}
-}
+.ok{background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.3);color:var(--green);}
+.ok .bdot{background:var(--green);box-shadow:0 0 5px var(--green);}
+.bad{background:rgba(255,40,60,.1);border:1px solid rgba(255,40,60,.3);color:#ff3344;}
+.bad .bdot{background:#ff3344;}
+.updating{background:rgba(255,170,0,.1);border:1px solid rgba(255,170,0,.3);color:var(--orange);}
+.updating .bdot{background:var(--orange);}
+.risk{background:rgba(255,221,0,.08);border:1px solid rgba(255,221,0,.3);color:var(--yellow);}
+.risk .bdot{background:var(--yellow);}
 
 /* DISCORD PANEL */
 .discord-panel{
-  margin-top:25px;
-  padding:20px;
-  border:1px solid var(--discord);
-  border-radius:10px;
-  text-align:center;
-  box-shadow:0 0 20px var(--discord);
-  animation:glow 2s infinite alternate;
+  margin-top:20px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+  padding:20px 24px;
+  background:rgba(88,101,242,.08);
+  border:1px solid rgba(88,101,242,.2);
+  border-radius:12px;
 }
-@keyframes glow{
-  from{box-shadow:0 0 10px var(--discord)}
-  to{box-shadow:0 0 30px var(--discord)}
+.discord-panel-text{font-size:.85rem;color:var(--muted);line-height:1.6;}
+.discord-panel-text strong{display:block;color:#fff;font-size:.9rem;margin-bottom:3px;}
+
+/* FOOTER */
+.footer{
+  margin-top:24px;
+  text-align:center;
+  font-size:.68rem;
+  color:var(--muted2);
 }
 
-.footer{
-  margin-top:20px;
-  text-align:center;
-  color:#777;
+@media(max-width:600px){
+  .wrap{padding:28px 14px 60px;}
+  th,td{padding:10px 12px;}
+  .logo{font-size:.92rem;}
+  .title-row h1{font-size:1.1rem;}
 }
 </style>
 </head>
 
 <body>
 
+<div class="bg">
+  <div class="o1"></div>
+  <div class="o2"></div>
+</div>
+
 <div class="wrap">
 
-<header>
-  <div class="logo">🎮 DEVIL STORE</div>
+  <header>
+    <a class="logo" href="https://devilsoftwares.com/">
+      <div class="logo-icon">🎮</div>
+      Devil Store
+    </a>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div class="page-badge"><div class="live-dot"></div> Live Status</div>
+      <a class="discord-btn" href="https://discord.gg/waKmmYAbtd" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Join Discord
+      </a>
+    </div>
+  </header>
 
-  <!-- ✅ WORKING DISCORD BUTTON -->
-  <a class="discord-btn"
-     href="https://discord.gg/waKmmYAbtd"
-     target="_blank"
-     rel="noopener noreferrer">
-    Join Discord
-  </a>
-</header>
+  <div class="title-row">
+    <h1>Game Status Tracker</h1>
+    <p>Real-time status of all software products. Check before purchasing.</p>
+  </div>
 
-<div class="card">
+  <!-- Summary pills -->
+  <div class="summary" id="summary"></div>
 
-<table>
-<thead>
-<tr>
-<th>Software</th>
-<th>Game</th>
-<th>Status</th>
-<th>Notes</th>
-</tr>
-</thead>
+  <!-- Table -->
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Software</th>
+          <th>Game</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="list"></tbody>
+    </table>
+  </div>
 
-<tbody id="list"></tbody>
-</table>
+  <!-- Discord panel -->
+  <div class="discord-panel">
+    <div class="discord-panel-text">
+      <strong>Get live updates &amp; support</strong>
+      Join our Discord for real-time status alerts and product help.
+    </div>
+    <a class="discord-btn" href="https://discord.gg/waKmmYAbtd" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Join Discord
+    </a>
+  </div>
 
-<!-- DISCORD PANEL -->
-<div class="discord-panel">
-  🚀 Join our Discord for live updates & support  
-  <br><br>
+  <div class="footer">⚠ Status updated manually — always verify on Discord before purchasing.</div>
 
-  <!-- ✅ SECOND WORKING BUTTON -->
-  <a class="discord-btn"
-     href="https://discord.gg/waKmmYAbtd"
-     target="_blank"
-     rel="noopener noreferrer">
-    CLICK TO JOIN
-  </a>
-</div>
-
-<div class="footer">
-⚠ Use at your own risk — live gamer tracker
-</div>
-
-</div>
 </div>
 
 <script>
-
 const DATA = [
-  { name:'FECURITY', game:'Call of Duty', status:'undetected' },
-  { name:'DULLWAVE', game:'Call of Duty', status:'undetected' },
-  { name:'ARCAN', game:'Apex Legend', status:'risk' },
-  { name:'BSS', game:'PUBG', status:'undetected' },
-  { name:'ARCAN', game:'PUBG', status:'risk' },
-  { name:'DODO', game:'PUBG', status:'undetected' },
-  { name:'OWO', game:'PUBG', status:'undetected' },
-  { name:'IO', game:'PUBG', status:'undetected' },
-  { name:'ARES ARC RAIDERS', game:'ARC RAIDERS', status:'undetected' },
-  { name:'ANCIENT ARC RAIDERS', game:'ARC RAIDERS', status:'undetected' }
+  { name:'FECURITY',             game:'Call of Duty',  status:'undetected' },
+  { name:'DULLWAVE',             game:'Call of Duty',  status:'undetected' },
+  { name:'ARCAN',                game:'Apex Legends',  status:'undetected'       },
+  { name:'BSS',                  game:'PUBG',          status:'detected' },
+  { name:'ARCAN',                game:'PUBG',          status:'risk'       },
+  { name:'DODO',                 game:'PUBG',          status:'undetected' },
+  { name:'OWO',                  game:'PUBG',          status:'undetected' },
+  { name:'IO',                   game:'PUBG',          status:'undetected' },
+  { name:'ARES',                 game:'ARC Raiders',   status:'undetected' },
+  { name:'ANCIENT',              game:'ARC Raiders',   status:'undetected' }
 ];
 
+function getCls(s){
+  s=(s||'').toLowerCase();
+  if(s==='undetected'||s==='undetect') return {cls:'ok', lbl:'Undetected',    col:'#00e87a'};
+  if(s==='updating')                   return {cls:'updating', lbl:'Updating', col:'#ffaa00'};
+  if(s==='risk')                       return {cls:'risk', lbl:'Use at Own Risk', col:'#ffdd00'};
+  return                                      {cls:'bad', lbl:'Detected',     col:'#ff3344'};
+}
+
+// Render table
 const tbody = document.getElementById('list');
-
-function makeRow(item){
-  let cls='bad', txt='DETECTED';
-
-  if(item.status==='undetected'||item.status==='undetect'){
-    cls='ok'; txt='UNDETECTED';
-  }
-  else if(item.status==='updating'){
-    cls='updating'; txt='UPDATING';
-  }
-  else if(item.status==='risk'){
-    cls='risk'; txt='USE AT OWN RISK';
-  }
-
+DATA.forEach(item => {
+  const c = getCls(item.status);
   const tr = document.createElement('tr');
   tr.innerHTML = `
-    <td><b>${item.name}</b></td>
+    <td>${item.name}</td>
     <td><span class="game-tag">${item.game}</span></td>
-    <td><span class="badge ${cls}">${txt}</span></td>
-    <td>-</td>
+    <td><span class="badge ${c.cls}"><span class="bdot"></span>${c.lbl}</span></td>
+    <td style="color:rgba(238,240,255,.3);font-size:.78rem;">—</td>
   `;
-  return tr;
-}
+  tbody.appendChild(tr);
+});
 
-function render(){
-  tbody.innerHTML='';
-  DATA.forEach(i=>tbody.appendChild(makeRow(i)));
-}
-
-render();
-
+// Render summary pills
+const counts = {undetected:0, risk:0, updating:0, detected:0};
+DATA.forEach(item => {
+  const s = (item.status||'').toLowerCase();
+  if(s==='undetected'||s==='undetect') counts.undetected++;
+  else if(s==='risk') counts.risk++;
+  else if(s==='updating') counts.updating++;
+  else counts.detected++;
+});
+const sumEl = document.getElementById('summary');
+[
+  {k:'undetected', l:'Undetected',     c:'#00e87a'},
+  {k:'risk',       l:'Use at Own Risk',c:'#ffdd00'},
+  {k:'updating',   l:'Updating',       c:'#ffaa00'},
+  {k:'detected',   l:'Detected',       c:'#ff3344'}
+].forEach(p => {
+  if(!counts[p.k]) return;
+  const d = document.createElement('div');
+  d.className = 'sum-pill';
+  d.innerHTML = `<span class="sum-dot" style="background:${p.c};box-shadow:0 0 5px ${p.c};"></span><strong style="color:#fff;">${counts[p.k]}</strong>&nbsp;${p.l}`;
+  sumEl.appendChild(d);
+});
 </script>
 
 </body>
